@@ -134,7 +134,7 @@ const displayController = (() => {
   htmlBoard.id = "game-board";
   const board = gameBoard.getBoard();
 
-  const createCell = () => {
+  const createCells = () => {
     for (let i = 0; i < board.length; i++) {
       const cell = document.createElement("div");
       cell.classList.add("cell");
@@ -152,12 +152,17 @@ const displayController = (() => {
     document.body.appendChild(htmlBoard);
   };
 
-  return { createCell, appendBoardToBody };
+  const displayBoard = () => {
+    createCells();
+    appendBoardToBody();
+  };
+
+  return { displayBoard };
 })();
 // * Test
-
-displayController.createCell();
-displayController.appendBoardToBody();
+displayController.displayBoard();
+// displayController.createCell();
+// displayController.appendBoardToBody();
 
 // game.displayGame();
 // console.log("********");
