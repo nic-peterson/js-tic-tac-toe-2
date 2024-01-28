@@ -7,7 +7,7 @@ function createPlayer(name, marker) {
 
 // * Gameboard module
 const gameBoard = (() => {
-  let board = ["", "", "", "", "", "", "", "", ""];
+  let board = Array(9).fill(null); // Represents a 3x3 board
 
   const getBoard = () => board;
 
@@ -16,15 +16,15 @@ const gameBoard = (() => {
   };
 
   const resetBoard = () => {
-    board = ["", "", "", "", "", "", "", "", ""];
+    board = Array(9).fill(null);
   };
 
   const isBoardfull = () => {
-    return board.every((cell) => cell !== "");
+    return board.every((cell) => cell !== null);
   };
 
   const isCellEmpty = (index) => {
-    return board[index] === "";
+    return board[index] === null;
   };
 
   return { getBoard, updateBoard, resetBoard, isBoardfull, isCellEmpty };
@@ -35,54 +35,93 @@ const game = (() => {
   const player1 = createPlayer("Player 1", "X");
   const player2 = createPlayer("Player 2", "O");
   let currentPlayer = player1;
-  // * Game logic
-  // TODO game start
-
-  const startGame = () => {
-    const gameBoard = gameBoard.getBoard();
-    // TODO: Continue with the game logic
+  let gameStatus = {
+    isOver: false,
+    winner: null,
   };
 
+  const startGame = () => {
+    gameBoard.resetBoard();
+    currentPlayer = player1;
+    gameStatus = {
+      isOver: false,
+      winner: null,
+    };
+    gameController();
+  };
+
+  const gameController = () => {
+    while (!gameStatus.isOver) {
+      playerTurn();
+    }
+  };
   const displayGame = () => {
     console.log(gameBoard.getBoard());
     console.log(`player1: ${player1.name} ${player1.marker}`);
     console.log(`player2: ${player2.name} ${player2.marker}`);
     console.log(`current player: ${currentPlayer.name}`);
   };
-  // TODO game reset
 
-  // TODO player turn
-  // TODO check win
-  // TODO check tie
-  // * Game flow
-  return { startGame, displayGame };
+  const playerTurn = (index) => {
+    if (gameBoard.isCellEmpty(index)) {
+      gameBoard.updateBoard(index, currentPlayer.marker);
+      if (checkWin()) {
+        gameStatus.winner = currentPlayer;
+        gameStatus.isOver = true;
+        return;
+      }
+      if (checkTie()) {
+        gameStatus.winner = null;
+        gameStatus.isOver = true;
+        return;
+      }
+      currentPlayer = currentPlayer === player1 ? player2 : player1;
+    }
+  };
+
+  const checkWin = () => {
+    const board = gameBoard.getBoard();
+    // * check rows
+    for (let i = 0; i < 9; i += 3) {
+      if (
+        board[i] === board[i + 1] &&
+        board[i + 1] === board[i + 2] &&
+        board[i] !== null
+      ) {
+        return true;
+      }
+    }
+    // * check columns
+    for (let i = 0; i < 3; i++) {
+      if (
+        board[i] === board[i + 3] &&
+        board[i + 3] === board[i + 6] &&
+        board[i] !== null
+      ) {
+        return true;
+      }
+    }
+    // * check diagonals
+    if (board[0] === board[4] && board[4] === board[8] && board[0] !== null) {
+      return true;
+    }
+    if (board[2] === board[4] && board[4] === board[6] && board[2] !== null) {
+      return true;
+    }
+    return false;
+  };
+
+  const checkTie = () => {
+    return gameBoard.isBoardfull() && !checkWin();
+  };
+
+  return { startGame, displayGame, playerTurn, checkWin, checkTie };
 })();
-
-// * Display controller module
 
 // * Test
 
 game.displayGame();
 console.log("********");
-// const player1 = createPlayer("Player 1", "X");
-// const player2 = createPlayer("Player 2", "O");
-/*
-console.log(player1);
-console.log(player2);
-
-console.log(gameBoard.getBoard());
-gameBoard.updateBoard(0, player1.marker);
-console.log(gameBoard.getBoard());
-gameBoard.resetBoard();
-console.log(gameBoard.getBoard());
-
-for (let i = 0; i < 9; i++) {
-  gameBoard.updateBoard(i, player1.marker);
-}
-console.log(gameBoard.getBoard());
-console.log(gameBoard.isBoardfull());
-console.log(gameBoard.isCellEmpty(0));
-gameBoard.resetBoard();
-console.log(gameBoard.getBoard());
-console.log(gameBoard.isCellEmpty(0));
-*/
+game.playerTurn(0);
+gameBoard.getBoard();
+// game.displayGame();
