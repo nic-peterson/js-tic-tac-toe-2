@@ -56,10 +56,16 @@ const game = (() => {
     }
   };
   const displayGame = () => {
-    console.log(gameBoard.getBoard());
     console.log(`player1: ${player1.name} ${player1.marker}`);
     console.log(`player2: ${player2.name} ${player2.marker}`);
     console.log(`current player: ${currentPlayer.name}`);
+    const board = gameBoard.getBoard();
+    let j = 1;
+    for (let i = 0; i < 9; i += 3) {
+      console.log(`row ${j}: ${board[i]} | ${board[i + 1]} | ${board[i + 2]}`);
+      j++;
+    }
+    //console.log(gameBoard.getBoard());
   };
 
   const playerTurn = (index) => {
