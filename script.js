@@ -32,19 +32,41 @@ const gameBoard = (() => {
 
 // * Game module
 const game = (() => {
+  const player1 = createPlayer("Player 1", "X");
+  const player2 = createPlayer("Player 2", "O");
+  let currentPlayer = player1;
   // * Game logic
+  // TODO game start
+
+  const startGame = () => {
+    const gameBoard = gameBoard.getBoard();
+    // TODO: Continue with the game logic
+  };
+
+  const displayGame = () => {
+    console.log(gameBoard.getBoard());
+    console.log(`player1: ${player1.name} ${player1.marker}`);
+    console.log(`player2: ${player2.name} ${player2.marker}`);
+    console.log(`current player: ${currentPlayer.name}`);
+  };
+  // TODO game reset
+
   // TODO player turn
   // TODO check win
   // TODO check tie
   // * Game flow
+  return { startGame, displayGame };
 })();
 
 // * Display controller module
 
 // * Test
-const player1 = createPlayer("Player 1", "X");
-const player2 = createPlayer("Player 2", "O");
 
+game.displayGame();
+console.log("********");
+// const player1 = createPlayer("Player 1", "X");
+// const player2 = createPlayer("Player 2", "O");
+/*
 console.log(player1);
 console.log(player2);
 
@@ -63,3 +85,4 @@ console.log(gameBoard.isCellEmpty(0));
 gameBoard.resetBoard();
 console.log(gameBoard.getBoard());
 console.log(gameBoard.isCellEmpty(0));
+*/
