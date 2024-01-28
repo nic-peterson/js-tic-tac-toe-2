@@ -54,6 +54,11 @@ const game = (() => {
     while (!gameStatus.isOver) {
       playerTurn();
     }
+    if (gameStatus.winner === null) {
+      console.log("It's a tie!");
+    } else {
+      console.log(`${gameStatus.winner.name} has won!`);
+    }
   };
   const displayGame = () => {
     console.log(`player1: ${player1.name} ${player1.marker}`);
@@ -65,7 +70,6 @@ const game = (() => {
       console.log(`row ${j}: ${board[i]} | ${board[i + 1]} | ${board[i + 2]}`);
       j++;
     }
-    //console.log(gameBoard.getBoard());
   };
 
   const playerTurn = (index) => {
@@ -124,10 +128,40 @@ const game = (() => {
   return { startGame, displayGame, playerTurn, checkWin, checkTie };
 })();
 
+// * Display controller module
+const displayController = (() => {
+  const htmlBoard = document.createElement("div");
+  htmlBoard.id = "game-board";
+  const board = gameBoard.getBoard();
+
+  const createCell = () => {
+    for (let i = 0; i < board.length; i++) {
+      const cell = document.createElement("div");
+      cell.classList.add("cell");
+      cell.id = `cell-${i}`;
+      cell.dataset.index = i;
+      cell.textContent = i;
+      cell.addEventListener("click", () => {
+        game.playerTurn(i);
+      });
+      htmlBoard.appendChild(cell);
+    }
+  };
+
+  const appendBoardToBody = () => {
+    document.body.appendChild(htmlBoard);
+  };
+
+  return { createCell, appendBoardToBody };
+})();
 // * Test
 
-game.displayGame();
-console.log("********");
-game.playerTurn(0);
-gameBoard.getBoard();
+displayController.createCell();
+displayController.appendBoardToBody();
+
+// game.displayGame();
+// console.log("********");
+// game.playerTurn(0);
+// gameBoard.getBoard();
+//displayController.displayBoard();
 // game.displayGame();
