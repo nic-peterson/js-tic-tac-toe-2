@@ -143,6 +143,8 @@ const game = (() => {
     initPlayers,
     player1: () => player1,
     player2: () => player2,
+    currentPlayer: () => currentPlayer,
+    gameStatus: () => gameStatus,
     startGame,
     displayGame,
     playerTurn,
@@ -154,6 +156,7 @@ const game = (() => {
 // * Display controller module
 const displayController = (() => {
   let htmlBoard;
+
   // const htmlBoard = createBoard();
 
   // Create cells for the board
@@ -191,34 +194,34 @@ const displayController = (() => {
   };
 
   const displayPlayers = () => {
-    player1 = document.createElement("div");
-    player1.id = "player1";
-    player1.textContent = `${game.player1.name} ${game.player1.marker}`;
-    document.body.appendChild(player1);
-    player2 = document.createElement("div");
-    player2.id = "player2";
-    player2.textContent = `${game.player2.name} ${game.player2.marker}`;
-    document.body.appendChild(player2);
+    player1Div = document.createElement("div");
+    player1Div.id = "player1";
+    player1Div.textContent = `${game.player1().name} ${game.player1().marker}`;
+    document.body.appendChild(player1Div);
+    player2Div = document.createElement("div");
+    player2Div.id = "player2";
+    player2Div.textContent = `${game.player2().name} ${game.player2().marker}`;
+    document.body.appendChild(player2Div);
   };
 
   const displayCurrentPlayer = () => {
     currentPlayer = document.createElement("div");
     currentPlayer.id = "current-player";
-    currentPlayer.textContent = `Current player: ${game.currentPlayer.name}`;
+    currentPlayer.textContent = `Current player: ${game.currentPlayer().name}`;
     document.body.appendChild(currentPlayer);
   };
 
   const displayGameStatus = () => {
-    gameStatus = document.createElement("div");
-    gameStatus.id = "game-status";
-    gameStatus.textContent = `${game.gameStatus.isOver}`;
-    document.body.appendChild(gameStatus);
+    gameStatusDiv = document.createElement("div");
+    gameStatusDiv.id = "game-status";
+    gameStatusDiv.textContent = `Game isOver(?): ${game.gameStatus().isOver}`;
+    document.body.appendChild(gameStatusDiv);
   };
 
   const displayGame = () => {
     displayPlayers();
-    //displayCurrentPlayer();
-    //displayGameStatus();
+    displayCurrentPlayer();
+    displayGameStatus();
     displayBoard();
   };
   return { displayGame };
