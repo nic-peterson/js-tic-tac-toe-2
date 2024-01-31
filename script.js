@@ -1,9 +1,9 @@
 // TODO: create gaame, gameboard, and player objects
 
 // * Player factory function
-function createPlayer(name, marker) {
+const Player = (name, marker) => {
   return { name, marker };
-}
+};
 
 // * Gameboard module
 const gameBoard = (() => {
@@ -32,12 +32,22 @@ const gameBoard = (() => {
 
 // * Game module
 const game = (() => {
-  const player1 = createPlayer("Player 1", "X");
-  const player2 = createPlayer("Player 2", "O");
+  let player1, player2;
+
   let currentPlayer = player1;
   let gameStatus = {
     isOver: false,
     winner: null,
+  };
+
+  const initPlayers = () => {
+    player1 = Player("Player 1", "X");
+    player2 = Player("Player 2", "O");
+  };
+
+  const initiGame = () => {
+    displayController.displayBoard();
+    startGame();
   };
 
   const startGame = () => {
@@ -51,6 +61,7 @@ const game = (() => {
   };
 
   const gameController = () => {
+    /*
     while (!gameStatus.isOver) {
       playerTurn();
     }
@@ -59,7 +70,9 @@ const game = (() => {
     } else {
       console.log(`${gameStatus.winner.name} has won!`);
     }
+    */
   };
+
   const displayGame = () => {
     console.log(`player1: ${player1.name} ${player1.marker}`);
     console.log(`player2: ${player2.name} ${player2.marker}`);
@@ -125,42 +138,97 @@ const game = (() => {
     return gameBoard.isBoardfull() && !checkWin();
   };
 
-  return { startGame, displayGame, playerTurn, checkWin, checkTie };
+  return {
+    initiGame,
+    initPlayers,
+    player1: () => player1,
+    player2: () => player2,
+    startGame,
+    displayGame,
+    playerTurn,
+    checkWin,
+    checkTie,
+  };
 })();
 
 // * Display controller module
 const displayController = (() => {
-  const htmlBoard = document.createElement("div");
-  htmlBoard.id = "game-board";
-  const board = gameBoard.getBoard();
+  let htmlBoard;
+  // const htmlBoard = createBoard();
 
+  // Create cells for the board
   const createCells = () => {
+    const board = gameBoard.getBoard(); // Get the current state of the game board
+
     for (let i = 0; i < board.length; i++) {
       const cell = document.createElement("div");
       cell.classList.add("cell");
       cell.id = `cell-${i}`;
       cell.dataset.index = i;
-      cell.textContent = i;
+      cell.textContent = board[i];
       cell.addEventListener("click", () => {
         game.playerTurn(i);
+        updateDisplay();
       });
       htmlBoard.appendChild(cell);
     }
   };
 
-  const appendBoardToBody = () => {
+  // Create the board and append cells
+  const createBoard = () => {
+    htmlBoard = document.createElement("div");
+    htmlBoard.id = "game-board";
+    createCells();
     document.body.appendChild(htmlBoard);
   };
 
-  const displayBoard = () => {
-    createCells();
-    appendBoardToBody();
+  const updateDisplay = () => {
+    return;
   };
 
-  return { displayBoard };
+  const displayBoard = () => {
+    createBoard();
+  };
+
+  const displayPlayers = () => {
+    player1 = document.createElement("div");
+    player1.id = "player1";
+    player1.textContent = `${game.player1.name} ${game.player1.marker}`;
+    document.body.appendChild(player1);
+    player2 = document.createElement("div");
+    player2.id = "player2";
+    player2.textContent = `${game.player2.name} ${game.player2.marker}`;
+    document.body.appendChild(player2);
+  };
+
+  const displayCurrentPlayer = () => {
+    currentPlayer = document.createElement("div");
+    currentPlayer.id = "current-player";
+    currentPlayer.textContent = `Current player: ${game.currentPlayer.name}`;
+    document.body.appendChild(currentPlayer);
+  };
+
+  const displayGameStatus = () => {
+    gameStatus = document.createElement("div");
+    gameStatus.id = "game-status";
+    gameStatus.textContent = `${game.gameStatus.isOver}`;
+    document.body.appendChild(gameStatus);
+  };
+
+  const displayGame = () => {
+    displayPlayers();
+    //displayCurrentPlayer();
+    //displayGameStatus();
+    displayBoard();
+  };
+  return { displayGame };
 })();
+
 // * Test
-displayController.displayBoard();
+// document.addEventListener("DOMContentLoaded", () => game.initGame());
+game.initPlayers();
+game.startGame();
+displayController.displayGame();
 // displayController.createCell();
 // displayController.appendBoardToBody();
 
