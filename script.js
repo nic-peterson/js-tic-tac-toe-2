@@ -158,6 +158,7 @@ const displayController = (() => {
 
   // Create cells for the board
   const createCells = () => {
+    //const board = gameBoard.getBoard(); // Get the current state of the game board
     const board = gameBoard.getBoard(); // Get the current state of the game board
 
     for (let i = 0; i < board.length; i++) {
@@ -184,9 +185,12 @@ const displayController = (() => {
 
   // TODO Complete this method
   const updateDisplay = () => {
+    const board = gameBoard.getBoard(); // Get the current state of the game board
     for (let i = 0; i < board.length; i++) {
       const cell = document.getElementById(`cell-${i}`);
       cell.textContent = board[i];
+
+      //console.log(cell.textContent);
     }
     return;
   };
