@@ -267,10 +267,24 @@ const displayController = (() => {
     gameStatusDiv.textContent = `Game isOver(?): ${game.gameStatus().isOver}`;
   };
 
+  const displayWinner = () => {
+    const winner = document.createElement("div");
+    winner.id = "winner";
+    winner.textContent = "Winner:";
+    document.body.appendChild(winner);
+  };
+
+  const updateDisplayWinner = () => {
+    const winnerDiv = document.getElementById("winner");
+
+    winnerDiv.textContent = `Winner: ${game.gameStatus().winner.name}`;
+  };
+
   const displayGame = () => {
     displayPlayers();
     displayCurrentPlayer();
     displayGameStatus();
+    displayWinner();
     displayBoard();
   };
   return { displayGame };
