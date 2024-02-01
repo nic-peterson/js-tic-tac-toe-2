@@ -1,5 +1,3 @@
-// TODO: create gaame, gameboard, and player objects
-
 // * Player factory function
 const Player = (name, marker) => {
   return { name, marker };
@@ -33,7 +31,6 @@ const gameBoard = (() => {
 // * Game module
 const game = (() => {
   let player1, player2;
-
   let currentPlayer = player1;
   let gameStatus = {
     isOver: false,
@@ -45,9 +42,9 @@ const game = (() => {
     player2 = Player("Player 2", "O");
   };
 
-  const initiGame = () => {
-    displayController.displayBoard();
+  const initGame = () => {
     startGame();
+    displayController.displayGame();
   };
 
   const startGame = () => {
@@ -60,6 +57,8 @@ const game = (() => {
     gameController();
   };
 
+  // TODO Not sure if I need to complete this function. I may just need to return isOver.
+  // TODO TBC
   const gameController = () => {
     /*
     while (!gameStatus.isOver) {
@@ -139,7 +138,7 @@ const game = (() => {
   };
 
   return {
-    initiGame,
+    initGame,
     initPlayers,
     player1: () => player1,
     player2: () => player2,
@@ -156,8 +155,6 @@ const game = (() => {
 // * Display controller module
 const displayController = (() => {
   let htmlBoard;
-
-  // const htmlBoard = createBoard();
 
   // Create cells for the board
   const createCells = () => {
@@ -185,8 +182,31 @@ const displayController = (() => {
     document.body.appendChild(htmlBoard);
   };
 
+  // TODO Complete this method
   const updateDisplay = () => {
+    for (let i = 0; i < board.length; i++) {
+      const cell = document.getElementById(`cell-${i}`);
+      cell.textContent = board[i];
+    }
     return;
+  };
+
+  // TODO complete disableBoardClicks method
+  const disableBoardClicks = () => {
+    const cells = document.querySelectorAll(".cell");
+    cells.forEach((cell) => {
+      cell.removeEventListener("click", () => {});
+    });
+  };
+
+  const getGameOverMessage = () => {
+    if (game.gameStatus().isOver) {
+      if (game.gameStatus().winner === null) {
+        return "It's a tie!";
+      } else {
+        return `${game.gameStatus().winner.name} has won!`;
+      }
+    }
   };
 
   const displayBoard = () => {
@@ -228,16 +248,8 @@ const displayController = (() => {
 })();
 
 // * Test
-// document.addEventListener("DOMContentLoaded", () => game.initGame());
-game.initPlayers();
-game.startGame();
-displayController.displayGame();
-// displayController.createCell();
-// displayController.appendBoardToBody();
 
-// game.displayGame();
-// console.log("********");
-// game.playerTurn(0);
-// gameBoard.getBoard();
-//displayController.displayBoard();
-// game.displayGame();
+game.initPlayers();
+game.initGame();
+//game.startGame();
+// displayController.displayGame();
