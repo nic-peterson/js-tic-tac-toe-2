@@ -155,8 +155,16 @@ const game = (() => {
 // * Display controller module
 const displayController = (() => {
   let htmlBoard;
-
+  const eventHandlers = new Map();
   const board = gameBoard.getBoard(); // Get the current state of the game board
+
+  const cellClickHandler = (i) => {
+    return () => {
+      game.playerTurn(i);
+      updateDisplay();
+    };
+  };
+
   // Create cells for the board
   const createCells = () => {
     for (let i = 0; i < board.length; i++) {
@@ -165,12 +173,22 @@ const displayController = (() => {
       cell.id = `cell-${i}`;
       cell.dataset.index = i;
       cell.textContent = board[i];
-      cell.addEventListener("click", () => {
-        game.playerTurn(i);
-        updateDisplay();
-      });
+      // Create the event handler and store it in the map
+      const handler = cellClickHandler(i);
+      eventHandlers.set(cell, handler);
+      // Add the event handler to the cell
+      cell.addEventListener("click", handler);
       htmlBoard.appendChild(cell);
     }
+  };
+
+  const disableBoardClicks = () => {
+    const cells = document.querySelectorAll(".cell");
+    cells.forEach((cell) => {
+      // Get the event handler from the map and remove it
+      const handler = eventHandlers.get(cell);
+      cell.removeEventListener("click", handler);
+    });
   };
 
   // Create the board and append cells
@@ -191,15 +209,12 @@ const displayController = (() => {
     }
     updateDisplayCurrentPlayer();
     updateDisplayGameStatus();
-    return;
-  };
 
-  // TODO complete disableBoardClicks method
-  const disableBoardClicks = () => {
-    const cells = document.querySelectorAll(".cell");
-    cells.forEach((cell) => {
-      cell.removeEventListener("click", () => {});
-    });
+    if (game.gameStatus().isOver) {
+      const gameOverMessage = getGameOverMessage();
+      alert(gameOverMessage);
+      disableBoardClicks();
+    }
   };
 
   // TODO complete this
@@ -215,12 +230,6 @@ const displayController = (() => {
 
   const displayBoard = () => {
     createBoard();
-  };
-
-  const displayPlayerContainer = () => {
-    playerContainer = document.createElement("div");
-    playerContainer.id = "player-container";
-    document.body.appendChild(playerContainer);
   };
 
   const displayPlayers = () => {
