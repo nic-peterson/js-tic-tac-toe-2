@@ -156,11 +156,9 @@ const game = (() => {
 const displayController = (() => {
   let htmlBoard;
 
+  const board = gameBoard.getBoard(); // Get the current state of the game board
   // Create cells for the board
   const createCells = () => {
-    //const board = gameBoard.getBoard(); // Get the current state of the game board
-    const board = gameBoard.getBoard(); // Get the current state of the game board
-
     for (let i = 0; i < board.length; i++) {
       const cell = document.createElement("div");
       cell.classList.add("cell");
@@ -189,9 +187,10 @@ const displayController = (() => {
     for (let i = 0; i < board.length; i++) {
       const cell = document.getElementById(`cell-${i}`);
       cell.textContent = board[i];
-
       //console.log(cell.textContent);
     }
+    updateDisplayCurrentPlayer();
+    updateDisplayGameStatus();
     return;
   };
 
@@ -203,6 +202,7 @@ const displayController = (() => {
     });
   };
 
+  // TODO complete this
   const getGameOverMessage = () => {
     if (game.gameStatus().isOver) {
       if (game.gameStatus().winner === null) {
@@ -215,6 +215,12 @@ const displayController = (() => {
 
   const displayBoard = () => {
     createBoard();
+  };
+
+  const displayPlayerContainer = () => {
+    playerContainer = document.createElement("div");
+    playerContainer.id = "player-container";
+    document.body.appendChild(playerContainer);
   };
 
   const displayPlayers = () => {
@@ -235,11 +241,21 @@ const displayController = (() => {
     document.body.appendChild(currentPlayer);
   };
 
+  const updateDisplayCurrentPlayer = () => {
+    currentPlayer = document.getElementById("current-player");
+    currentPlayer.textContent = `Current player: ${game.currentPlayer().name}`;
+  };
+
   const displayGameStatus = () => {
     gameStatusDiv = document.createElement("div");
     gameStatusDiv.id = "game-status";
     gameStatusDiv.textContent = `Game isOver(?): ${game.gameStatus().isOver}`;
     document.body.appendChild(gameStatusDiv);
+  };
+
+  const updateDisplayGameStatus = () => {
+    gameStatusDiv = document.getElementById("game-status");
+    gameStatusDiv.textContent = `Game isOver(?): ${game.gameStatus().isOver}`;
   };
 
   const displayGame = () => {
