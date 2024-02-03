@@ -38,18 +38,20 @@ const game = (() => {
   };
 
   const initPlayers = (player1Name, player2Name) => {
-    player1 = Player(player1Name, "X");
-    player2 = Player(player2Name, "O");
+    player1 = Player(player1Name || player1.name, "X");
+    player2 = Player(player2Name || player2.name, "O");
+    currentPlayer = player1;
   };
 
   const startGame = () => {
     gameBoard.resetBoard();
-    currentPlayer = player1;
     gameStatus = {
       isOver: false,
       winner: null,
     };
   };
+
+  // const restartGame = () => {};
 
   const displayGame = () => {
     console.log(`player1: ${player1.name} ${player1.marker}`);
@@ -132,6 +134,7 @@ const game = (() => {
 // * Display controller module
 const displayController = (() => {
   let htmlBoard;
+
   const eventHandlers = new Map();
   const board = gameBoard.getBoard(); // Get the current state of the game board
 
@@ -162,6 +165,8 @@ const displayController = (() => {
         displayGame();
         button.textContent = "Restart Game"; // Change button text after game starts
       } else {
+        game.initPlayers(player1Name, player2Name);
+        //game.startGame();
         restartGame();
       }
     });
@@ -171,22 +176,44 @@ const displayController = (() => {
   const restartGame = () => {
     // Clear the board
     while (htmlBoard.firstChild) {
+      console.log("begin:" + htmlBoard.firstChild);
       htmlBoard.removeChild(htmlBoard.firstChild);
+      console.log("end" + htmlBoard.firstChild);
     }
     // Repopulate the board
     createCells();
     // Reset the game state
-    game.restartGame();
+    game.startGame();
     // Update the display
     displayGame();
   };
 
+  const createGame = () => {
+    const gameDiv = document.createElement("div");
+    gameDiv.id = "game";
+
+    const gameInfoDiv = document.createElement("div");
+    gameInfoDiv.id = "game-info";
+    gameDiv.appendChild(gameInfoDiv);
+
+    const gameBoardDiv = document.createElement("div");
+    gameBoardDiv.id = "game-board";
+    gameDiv.appendChild(gameBoardDiv);
+
+    document.body.appendChild(gameDiv);
+  };
+
+  // ! UPDATED
   const createGameOutcomeDisplay = () => {
     const outcomeDisplay = document.createElement("div");
     outcomeDisplay.id = "game-outcome";
-    document.body.appendChild(outcomeDisplay);
+
+    const gameInfoDiv = document.getElementById("game-info");
+
+    gameInfoDiv.appendChild(outcomeDisplay);
   };
 
+  // TODO
   const updateDisplayGameStatus = () => {
     const gameStatusDiv = document.getElementById("game-status");
     gameStatusDiv.textContent = `Game is Over: ${
@@ -213,6 +240,7 @@ const displayController = (() => {
 
   // Create cells for the board
   const createCells = () => {
+    const gameBoardDiv = document.getElementById("game-board");
     for (let i = 0; i < board.length; i++) {
       const cell = document.createElement("div");
       cell.classList.add("cell");
@@ -224,7 +252,7 @@ const displayController = (() => {
       eventHandlers.set(cell, handler);
       // Add the event handler to the cell
       cell.addEventListener("click", handler);
-      htmlBoard.appendChild(cell);
+      gameBoardDiv.appendChild(cell);
     }
   };
 
@@ -237,12 +265,17 @@ const displayController = (() => {
     });
   };
 
+  // ! UPDATED
   // Create the board and append cells
   const createBoard = () => {
-    htmlBoard = document.createElement("div");
-    htmlBoard.id = "game-board";
+    const gameBoardDiv = document.getElementById("game-board");
+    // htmlBoard = document.createElement("div");
+    // htmlBoard.id = "game-board";
     createCells();
-    document.body.appendChild(htmlBoard);
+
+    const gameDiv = document.getElementById("game");
+    gameDiv.appendChild(gameBoardDiv);
+    //document.body.appendChild(htmlBoard);
   };
 
   const updateDisplay = () => {
@@ -277,22 +310,30 @@ const displayController = (() => {
     createBoard();
   };
 
+  // ! UPDATED
   const displayPlayers = () => {
+    const gameInfoDiv = document.getElementById("game-info");
+
     player1Div = document.createElement("div");
     player1Div.id = "player1";
     player1Div.textContent = `${game.player1().name} ${game.player1().marker}`;
-    document.body.appendChild(player1Div);
+    gameInfoDiv.appendChild(player1Div);
+
     player2Div = document.createElement("div");
     player2Div.id = "player2";
     player2Div.textContent = `${game.player2().name} ${game.player2().marker}`;
-    document.body.appendChild(player2Div);
+    gameInfoDiv.appendChild(player2Div);
   };
 
+  // TODO
   const displayCurrentPlayer = () => {
+    const gameInfoDiv = document.getElementById("game-info");
+
     currentPlayer = document.createElement("div");
     currentPlayer.id = "current-player";
     currentPlayer.textContent = `Current player: ${game.currentPlayer().name}`;
-    document.body.appendChild(currentPlayer);
+
+    gameInfoDiv.appendChild(currentPlayer);
   };
 
   const updateDisplayCurrentPlayer = () => {
@@ -301,24 +342,22 @@ const displayController = (() => {
   };
 
   const displayGameStatus = () => {
+    const gameInfoDiv = document.getElementById("game-info");
+
     gameStatusDiv = document.createElement("div");
     gameStatusDiv.id = "game-status";
     gameStatusDiv.textContent = `Game isOver(?): ${game.gameStatus().isOver}`;
-    document.body.appendChild(gameStatusDiv);
-  };
 
-  /*
-  const updateDisplayGameStatus = () => {
-    gameStatusDiv = document.getElementById("game-status");
-    gameStatusDiv.textContent = `Game isOver(?): ${game.gameStatus().isOver}`;
+    gameInfoDiv.appendChild(gameStatusDiv);
   };
-  */
 
   const displayWinner = () => {
+    const gameInfoDiv = document.getElementById("game-info");
+
     const winner = document.createElement("div");
     winner.id = "winner";
     winner.textContent = "Winner:";
-    document.body.appendChild(winner);
+    gameInfoDiv.appendChild(winner);
   };
 
   const updateDisplayWinner = () => {
@@ -333,6 +372,7 @@ const displayController = (() => {
   };
 
   const displayGame = () => {
+    createGame();
     createGameOutcomeDisplay();
     displayPlayers();
     displayCurrentPlayer();
@@ -341,18 +381,8 @@ const displayController = (() => {
     createBoard();
   };
 
-  const clearGame = () => {
-    const player1Input = document.getElementById("player1-name");
-    const player2Input = document.getElementById("player2-name");
-    player1Input.value = "";
-    player2Input.value = "";
-    gameBoard.resetBoard();
-    updateDisplay();
-  };
   return { displayGame, initGame, updateDisplayWinner };
 })();
 
 // * Test
 displayController.initGame();
-// game.initPlayers();
-// game.initGame();
