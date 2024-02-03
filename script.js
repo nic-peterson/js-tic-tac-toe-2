@@ -123,7 +123,6 @@ const game = (() => {
     currentPlayer: () => currentPlayer,
     gameStatus: () => gameStatus,
     startGame,
-    displayGame,
     playerTurn,
     checkWin,
     checkTie,
