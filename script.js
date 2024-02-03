@@ -192,14 +192,11 @@ const displayController = (() => {
   };
 
   const restartGame = () => {
-    const gameDiv = document.getElementById("game");
-    while (gameDiv.firstChild) {
-      gameDiv.removeChild(gameDiv.firstChild);
-    }
-    document.body.removeChild(gameDiv);
-
     game.startGame();
-    displayGame();
+    updateCells();
+    updateDisplayPlayers();
+    updateDisplayCurrentPlayer();
+    updateDisplayGameStatus();
   };
 
   const createGame = () => {
@@ -266,6 +263,14 @@ const displayController = (() => {
       cell.addEventListener("click", handler);
       gameBoardDiv.appendChild(cell);
     }
+  };
+
+  const updateCells = () => {
+    const cells = document.querySelectorAll(".cell");
+    cells.forEach((cell) => {
+      const index = cell.dataset.index;
+      cell.textContent = board[index];
+    });
   };
 
   const disableBoardClicks = () => {
@@ -377,7 +382,6 @@ const displayController = (() => {
     displayPlayers();
     displayCurrentPlayer();
     displayGameStatus();
-    // displayWinner();
     createBoard();
   };
 
