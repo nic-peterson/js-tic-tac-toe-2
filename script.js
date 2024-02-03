@@ -197,7 +197,8 @@ const displayController = (() => {
     updateCells();
     //updateDisplayPlayers();
     managePlayerDisplay();
-    updateDisplayCurrentPlayer();
+    // updateDisplayCurrentPlayer();
+    manageCurrentPlayerDisplay();
     updateDisplayGameStatus();
   };
 
@@ -301,7 +302,8 @@ const displayController = (() => {
       cell.textContent = board[i];
       //console.log(cell.textContent);
     }
-    updateDisplayCurrentPlayer();
+    manageCurrentPlayerDisplay();
+    // updateDisplayCurrentPlayer();
     updateDisplayGameStatus();
 
     if (game.gameStatus().isOver) {
@@ -343,18 +345,14 @@ const displayController = (() => {
     player2Div.textContent = `${game.player2().name} ${game.player2().marker}`;
   };
 
-  const displayCurrentPlayer = () => {
-    const gameInfoDiv = document.getElementById("game-info");
-
-    currentPlayer = document.createElement("div");
-    currentPlayer.id = "current-player";
-    currentPlayer.textContent = `Current player: ${game.currentPlayer().name}`;
-
-    gameInfoDiv.appendChild(currentPlayer);
-  };
-
-  const updateDisplayCurrentPlayer = () => {
-    currentPlayer = document.getElementById("current-player");
+  const manageCurrentPlayerDisplay = () => {
+    let currentPlayer = document.getElementById("current-player");
+    if (!currentPlayer) {
+      currentPlayer = document.createElement("div");
+      currentPlayer.id = "current-player";
+      const gameInfoDiv = document.getElementById("game-info");
+      gameInfoDiv.appendChild(currentPlayer);
+    }
     currentPlayer.textContent = `Current player: ${game.currentPlayer().name}`;
   };
 
@@ -378,7 +376,8 @@ const displayController = (() => {
     createGameOutcomeDisplay();
     //displayPlayers();
     managePlayerDisplay();
-    displayCurrentPlayer();
+    //displayCurrentPlayer();
+    manageCurrentPlayerDisplay();
     displayGameStatus();
     createBoard();
   };
