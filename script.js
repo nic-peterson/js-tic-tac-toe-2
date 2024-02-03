@@ -325,8 +325,8 @@ const displayController = (() => {
 
   const managePlayerDisplay = () => {
     // Player 1 display / update
-    let Player1Div = document.getElementById("player1");
-    if (!Player1Div) {
+    let player1Div = document.getElementById("player1");
+    if (!player1Div) {
       player1Div = document.createElement("div");
       player1Div.id = "player1";
       const gameInfoDiv = document.getElementById("game-info");
@@ -335,8 +335,8 @@ const displayController = (() => {
     player1Div.textContent = `${game.player1().name} ${game.player1().marker}`;
 
     // Player 2 display / update
-    let Player2Div = document.getElementById("player2");
-    if (!Player2Div) {
+    let player2Div = document.getElementById("player2");
+    if (!player2Div) {
       player2Div = document.createElement("div");
       player2Div.id = "player2";
       const gameInfoDiv = document.getElementById("game-info");
@@ -374,9 +374,7 @@ const displayController = (() => {
   const displayGame = () => {
     createGame();
     createGameOutcomeDisplay();
-    //displayPlayers();
     managePlayerDisplay();
-    //displayCurrentPlayer();
     manageCurrentPlayerDisplay();
     displayGameStatus();
     createBoard();
