@@ -184,7 +184,8 @@ const displayController = (() => {
         displayGame();
         button.textContent = "Restart Game"; // Change button text after game starts
       } else {
-        game.initPlayers(player1Name, player2Name);
+        game.player1().name = player1Name;
+        game.player2().name = player2Name;
         restartGame();
       }
     });
@@ -194,7 +195,8 @@ const displayController = (() => {
   const restartGame = () => {
     game.startGame();
     updateCells();
-    updateDisplayPlayers();
+    //updateDisplayPlayers();
+    managePlayerDisplay();
     updateDisplayCurrentPlayer();
     updateDisplayGameStatus();
   };
@@ -319,25 +321,25 @@ const displayController = (() => {
     }
   };
 
-  const displayPlayers = () => {
-    const gameInfoDiv = document.getElementById("game-info");
-
-    player1Div = document.createElement("div");
-    player1Div.id = "player1";
-    player1Div.textContent = `${game.player1().name} ${game.player1().marker}`;
-    gameInfoDiv.appendChild(player1Div);
-
-    player2Div = document.createElement("div");
-    player2Div.id = "player2";
-    player2Div.textContent = `${game.player2().name} ${game.player2().marker}`;
-    gameInfoDiv.appendChild(player2Div);
-  };
-
-  const updateDisplayPlayers = () => {
-    player1Div = document.getElementById("player1");
+  const managePlayerDisplay = () => {
+    // Player 1 display / update
+    let Player1Div = document.getElementById("player1");
+    if (!Player1Div) {
+      player1Div = document.createElement("div");
+      player1Div.id = "player1";
+      const gameInfoDiv = document.getElementById("game-info");
+      gameInfoDiv.appendChild(player1Div);
+    }
     player1Div.textContent = `${game.player1().name} ${game.player1().marker}`;
 
-    player2Div = document.getElementById("player2");
+    // Player 2 display / update
+    let Player2Div = document.getElementById("player2");
+    if (!Player2Div) {
+      player2Div = document.createElement("div");
+      player2Div.id = "player2";
+      const gameInfoDiv = document.getElementById("game-info");
+      gameInfoDiv.appendChild(player2Div);
+    }
     player2Div.textContent = `${game.player2().name} ${game.player2().marker}`;
   };
 
@@ -374,7 +376,8 @@ const displayController = (() => {
   const displayGame = () => {
     createGame();
     createGameOutcomeDisplay();
-    displayPlayers();
+    //displayPlayers();
+    managePlayerDisplay();
     displayCurrentPlayer();
     displayGameStatus();
     createBoard();
