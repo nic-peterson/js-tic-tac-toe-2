@@ -37,9 +37,9 @@ const game = (() => {
     winner: null,
   };
 
-  const initPlayers = () => {
-    player1 = Player("Player 1", "X");
-    player2 = Player("Player 2", "O");
+  const initPlayers = (player1Name, player2Name) => {
+    player1 = Player(player1Name, "X");
+    player2 = Player(player2Name, "O");
   };
 
   const initGame = () => {
@@ -181,6 +181,7 @@ const displayController = (() => {
         document.getElementById("player2-name").value || "Player 2";
       game.initPlayers(player1Name, player2Name);
       game.startGame();
+      displayGame();
       button.textContent = "Restart Game"; // Change button text after game starts
     });
     document.body.appendChild(button);
@@ -332,21 +333,23 @@ const displayController = (() => {
     winnerDiv.textContent = `Winner: ${game.gameStatus().winner.name}`;
   };
 
-  const displayGame = () => {
+  const initGame = () => {
     createPlayerInputFields();
     createStartRestartButton();
+  };
+
+  const displayGame = () => {
     createGameOutcomeDisplay();
     displayPlayers();
     displayCurrentPlayer();
     displayGameStatus();
     displayWinner();
-    // displayBoard();
     createBoard();
   };
-  return { displayGame, updateDisplayWinner };
+  return { displayGame, initGame, updateDisplayWinner };
 })();
 
 // * Test
-
-game.initPlayers();
-game.initGame();
+displayController.initGame();
+// game.initPlayers();
+// game.initGame();
