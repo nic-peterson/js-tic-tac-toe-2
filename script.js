@@ -49,22 +49,6 @@ const game = (() => {
       isOver: false,
       winner: null,
     };
-    // gameController();
-  };
-
-  // TODO Not sure if I need to complete this function. I may just need to return isOver.
-  // TODO TBC
-  const gameController = () => {
-    /*
-    while (!gameStatus.isOver) {
-      playerTurn();
-    }
-    if (gameStatus.winner === null) {
-      console.log("It's a tie!");
-    } else {
-      console.log(`${gameStatus.winner.name} has won!`);
-    }
-    */
   };
 
   const displayGame = () => {
