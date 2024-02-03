@@ -174,6 +174,22 @@ const displayController = (() => {
   };
 
   const restartGame = () => {
+    const gameDiv = document.getElementById("game");
+    while (gameDiv.firstChild) {
+      gameDiv.removeChild(gameDiv.firstChild);
+    }
+    document.body.removeChild(gameDiv);
+    // createGame();
+    // gameDiv.textContent = "RESTARTED";
+    game.startGame();
+    displayGame();
+
+    /*
+    displayPlayers();
+    displayCurrentPlayer();
+    displayGameStatus();
+    displayWinner();
+    createBoard();
     // Clear the board
     while (htmlBoard.firstChild) {
       console.log("begin:" + htmlBoard.firstChild);
@@ -186,6 +202,7 @@ const displayController = (() => {
     game.startGame();
     // Update the display
     displayGame();
+    */
   };
 
   const createGame = () => {
@@ -203,7 +220,6 @@ const displayController = (() => {
     document.body.appendChild(gameDiv);
   };
 
-  // ! UPDATED
   const createGameOutcomeDisplay = () => {
     const outcomeDisplay = document.createElement("div");
     outcomeDisplay.id = "game-outcome";
@@ -213,7 +229,6 @@ const displayController = (() => {
     gameInfoDiv.appendChild(outcomeDisplay);
   };
 
-  // TODO
   const updateDisplayGameStatus = () => {
     const gameStatusDiv = document.getElementById("game-status");
     gameStatusDiv.textContent = `Game is Over: ${
@@ -265,17 +280,14 @@ const displayController = (() => {
     });
   };
 
-  // ! UPDATED
   // Create the board and append cells
   const createBoard = () => {
     const gameBoardDiv = document.getElementById("game-board");
-    // htmlBoard = document.createElement("div");
-    // htmlBoard.id = "game-board";
+
     createCells();
 
     const gameDiv = document.getElementById("game");
     gameDiv.appendChild(gameBoardDiv);
-    //document.body.appendChild(htmlBoard);
   };
 
   const updateDisplay = () => {
@@ -310,7 +322,6 @@ const displayController = (() => {
     createBoard();
   };
 
-  // ! UPDATED
   const displayPlayers = () => {
     const gameInfoDiv = document.getElementById("game-info");
 
@@ -325,7 +336,6 @@ const displayController = (() => {
     gameInfoDiv.appendChild(player2Div);
   };
 
-  // TODO
   const displayCurrentPlayer = () => {
     const gameInfoDiv = document.getElementById("game-info");
 
