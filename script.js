@@ -366,11 +366,6 @@ const displayController = (() => {
     gameInfoDiv.appendChild(gameStatusDiv);
   };
 
-  const updateGameStatus = () => {
-    gameStatusDiv = document.getElementById("game-status");
-    gameStatusDiv.textContent = `Game isOver(?): ${game.gameStatus().isOver}`;
-  };
-
   const initGame = () => {
     createPlayerInputFields();
     createStartRestartButton();
