@@ -51,8 +51,6 @@ const game = (() => {
     };
   };
 
-  // const restartGame = () => {};
-
   const displayGame = () => {
     console.log(`player1: ${player1.name} ${player1.marker}`);
     console.log(`player2: ${player2.name} ${player2.marker}`);
@@ -133,10 +131,23 @@ const game = (() => {
 
 // * Display controller module
 const displayController = (() => {
-  let htmlBoard;
+  // ! Don't think I need this line! let htmlBoard;
 
   const eventHandlers = new Map();
   const board = gameBoard.getBoard(); // Get the current state of the game board
+
+  const isValidName = (name) => {
+    return name.trim().length > 0;
+  };
+
+  const displayErrorMessage = (message) => {
+    const errorMessageDiv =
+      document.getElementById("error-message") || document.createElement("div");
+    errorMessageDiv.id = "error-message";
+    errorMessageDiv.textContent = message;
+    errorMessageDiv.style.color = "red"; // Make the error message stand out
+    document.body.insertBefore(errorMessageDiv, document.body.firstChild);
+  };
 
   const createPlayerInputFields = () => {
     const player1Input = document.createElement("input");
@@ -155,10 +166,26 @@ const displayController = (() => {
     const button = document.createElement("button");
     button.textContent = "Start Game";
     button.addEventListener("click", () => {
+      const player1Name = document.getElementById("player1-name").value;
+      const player2Name = document.getElementById("player2-name").value;
+
+      if (!isValidName(player1Name) || !isValidName(player2Name)) {
+        displayErrorMessage("Please enter valid names for both players");
+        return; // Prevent the game from starting
+      }
+
+      // Clear any existing error messages if the input is now valid
+      const errorMessageDiv = document.getElementById("error-message");
+      if (errorMessageDiv) {
+        document.body.removeChild(errorMessageDiv);
+      }
+
+      /*
       const player1Name =
         document.getElementById("player1-name").value || "Player 1";
       const player2Name =
         document.getElementById("player2-name").value || "Player 2";
+      */
       game.initPlayers(player1Name, player2Name);
       game.startGame();
       if (button.textContent === "Start Game") {
@@ -166,7 +193,6 @@ const displayController = (() => {
         button.textContent = "Restart Game"; // Change button text after game starts
       } else {
         game.initPlayers(player1Name, player2Name);
-        //game.startGame();
         restartGame();
       }
     });
@@ -183,26 +209,6 @@ const displayController = (() => {
     // gameDiv.textContent = "RESTARTED";
     game.startGame();
     displayGame();
-
-    /*
-    displayPlayers();
-    displayCurrentPlayer();
-    displayGameStatus();
-    displayWinner();
-    createBoard();
-    // Clear the board
-    while (htmlBoard.firstChild) {
-      console.log("begin:" + htmlBoard.firstChild);
-      htmlBoard.removeChild(htmlBoard.firstChild);
-      console.log("end" + htmlBoard.firstChild);
-    }
-    // Repopulate the board
-    createCells();
-    // Reset the game state
-    game.startGame();
-    // Update the display
-    displayGame();
-    */
   };
 
   const createGame = () => {
@@ -316,10 +322,6 @@ const displayController = (() => {
         return `${game.gameStatus().winner.name} has won!`;
       }
     }
-  };
-
-  const displayBoard = () => {
-    createBoard();
   };
 
   const displayPlayers = () => {
