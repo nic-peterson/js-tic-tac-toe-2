@@ -42,11 +42,6 @@ const game = (() => {
     player2 = Player(player2Name, "O");
   };
 
-  const initGame = () => {
-    startGame();
-    displayController.displayGame();
-  };
-
   const startGame = () => {
     gameBoard.resetBoard();
     currentPlayer = player1;
@@ -54,7 +49,7 @@ const game = (() => {
       isOver: false,
       winner: null,
     };
-    gameController();
+    // gameController();
   };
 
   // TODO Not sure if I need to complete this function. I may just need to return isOver.
@@ -138,7 +133,6 @@ const game = (() => {
   };
 
   return {
-    initGame,
     initPlayers,
     player1: () => player1,
     player2: () => player2,
@@ -181,10 +175,27 @@ const displayController = (() => {
         document.getElementById("player2-name").value || "Player 2";
       game.initPlayers(player1Name, player2Name);
       game.startGame();
-      displayGame();
-      button.textContent = "Restart Game"; // Change button text after game starts
+      if (button.textContent === "Start Game") {
+        displayGame();
+        button.textContent = "Restart Game"; // Change button text after game starts
+      } else {
+        restartGame();
+      }
     });
     document.body.appendChild(button);
+  };
+
+  const restartGame = () => {
+    // Clear the board
+    while (htmlBoard.firstChild) {
+      htmlBoard.removeChild(htmlBoard.firstChild);
+    }
+    // Repopulate the board
+    createCells();
+    // Reset the game state
+    game.restartGame();
+    // Update the display
+    displayGame();
   };
 
   const createGameOutcomeDisplay = () => {
@@ -345,6 +356,15 @@ const displayController = (() => {
     displayGameStatus();
     displayWinner();
     createBoard();
+  };
+
+  const clearGame = () => {
+    const player1Input = document.getElementById("player1-name");
+    const player2Input = document.getElementById("player2-name");
+    player1Input.value = "";
+    player2Input.value = "";
+    gameBoard.resetBoard();
+    updateDisplay();
   };
   return { displayGame, initGame, updateDisplayWinner };
 })();
