@@ -131,8 +131,6 @@ const game = (() => {
 
 // * Display controller module
 const displayController = (() => {
-  // ! Don't think I need this line! let htmlBoard;
-
   const eventHandlers = new Map();
   const board = gameBoard.getBoard(); // Get the current state of the game board
 
@@ -180,12 +178,6 @@ const displayController = (() => {
         document.body.removeChild(errorMessageDiv);
       }
 
-      /*
-      const player1Name =
-        document.getElementById("player1-name").value || "Player 1";
-      const player2Name =
-        document.getElementById("player2-name").value || "Player 2";
-      */
       game.initPlayers(player1Name, player2Name);
       game.startGame();
       if (button.textContent === "Start Game") {
@@ -205,8 +197,7 @@ const displayController = (() => {
       gameDiv.removeChild(gameDiv.firstChild);
     }
     document.body.removeChild(gameDiv);
-    // createGame();
-    // gameDiv.textContent = "RESTARTED";
+
     game.startGame();
     displayGame();
   };
@@ -308,7 +299,6 @@ const displayController = (() => {
 
     if (game.gameStatus().isOver) {
       const gameOverMessage = getGameOverMessage();
-      updateDisplayWinner();
       alert(gameOverMessage);
       disableBoardClicks();
     }
@@ -338,6 +328,14 @@ const displayController = (() => {
     gameInfoDiv.appendChild(player2Div);
   };
 
+  const updateDisplayPlayers = () => {
+    player1Div = document.getElementById("player1");
+    player1Div.textContent = `${game.player1().name} ${game.player1().marker}`;
+
+    player2Div = document.getElementById("player2");
+    player2Div.textContent = `${game.player2().name} ${game.player2().marker}`;
+  };
+
   const displayCurrentPlayer = () => {
     const gameInfoDiv = document.getElementById("game-info");
 
@@ -363,19 +361,9 @@ const displayController = (() => {
     gameInfoDiv.appendChild(gameStatusDiv);
   };
 
-  const displayWinner = () => {
-    const gameInfoDiv = document.getElementById("game-info");
-
-    const winner = document.createElement("div");
-    winner.id = "winner";
-    winner.textContent = "Winner:";
-    gameInfoDiv.appendChild(winner);
-  };
-
-  const updateDisplayWinner = () => {
-    const winnerDiv = document.getElementById("winner");
-
-    winnerDiv.textContent = `Winner: ${game.gameStatus().winner.name}`;
+  const updateGameStatus = () => {
+    gameStatusDiv = document.getElementById("game-status");
+    gameStatusDiv.textContent = `Game isOver(?): ${game.gameStatus().isOver}`;
   };
 
   const initGame = () => {
@@ -389,11 +377,11 @@ const displayController = (() => {
     displayPlayers();
     displayCurrentPlayer();
     displayGameStatus();
-    displayWinner();
+    // displayWinner();
     createBoard();
   };
 
-  return { displayGame, initGame, updateDisplayWinner };
+  return { displayGame, initGame };
 })();
 
 // * Test
