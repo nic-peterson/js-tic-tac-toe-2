@@ -158,6 +158,57 @@ const displayController = (() => {
   const eventHandlers = new Map();
   const board = gameBoard.getBoard(); // Get the current state of the game board
 
+  const createPlayerInputFields = () => {
+    const player1Input = document.createElement("input");
+    player1Input.id = "player1-name";
+    player1Input.placeholder = "Enter Player 1 Name";
+
+    const player2Input = document.createElement("input");
+    player2Input.id = "player2-name";
+    player2Input.placeholder = "Enter Player 2 Name";
+
+    document.body.appendChild(player1Input);
+    document.body.appendChild(player2Input);
+  };
+
+  const createStartRestartButton = () => {
+    const button = document.createElement("button");
+    button.textContent = "Start Game";
+    button.addEventListener("click", () => {
+      const player1Name =
+        document.getElementById("player1-name").value || "Player 1";
+      const player2Name =
+        document.getElementById("player2-name").value || "Player 2";
+      game.initPlayers(player1Name, player2Name);
+      game.startGame();
+      button.textContent = "Restart Game"; // Change button text after game starts
+    });
+    document.body.appendChild(button);
+  };
+
+  const createGameOutcomeDisplay = () => {
+    const outcomeDisplay = document.createElement("div");
+    outcomeDisplay.id = "game-outcome";
+    document.body.appendChild(outcomeDisplay);
+  };
+
+  const updateDisplayGameStatus = () => {
+    const gameStatusDiv = document.getElementById("game-status");
+    gameStatusDiv.textContent = `Game is Over: ${
+      game.gameStatus().isOver ? "Yes" : "No"
+    }`;
+
+    const gameOutcomeDiv = document.getElementById("game-outcome");
+    if (game.gameStatus().isOver) {
+      const message = game.gameStatus().winner
+        ? `${game.gameStatus().winner.name} has won!`
+        : "It's a tie!";
+      gameOutcomeDiv.textContent = message;
+    } else {
+      gameOutcomeDiv.textContent = ""; // Clear previous outcome
+    }
+  };
+
   const cellClickHandler = (i) => {
     return () => {
       game.playerTurn(i);
@@ -199,7 +250,6 @@ const displayController = (() => {
     document.body.appendChild(htmlBoard);
   };
 
-  // TODO Complete this method
   const updateDisplay = () => {
     const board = gameBoard.getBoard(); // Get the current state of the game board
     for (let i = 0; i < board.length; i++) {
@@ -212,12 +262,12 @@ const displayController = (() => {
 
     if (game.gameStatus().isOver) {
       const gameOverMessage = getGameOverMessage();
+      updateDisplayWinner();
       alert(gameOverMessage);
       disableBoardClicks();
     }
   };
 
-  // TODO complete this
   const getGameOverMessage = () => {
     if (game.gameStatus().isOver) {
       if (game.gameStatus().winner === null) {
@@ -262,10 +312,12 @@ const displayController = (() => {
     document.body.appendChild(gameStatusDiv);
   };
 
+  /*
   const updateDisplayGameStatus = () => {
     gameStatusDiv = document.getElementById("game-status");
     gameStatusDiv.textContent = `Game isOver(?): ${game.gameStatus().isOver}`;
   };
+  */
 
   const displayWinner = () => {
     const winner = document.createElement("div");
@@ -281,18 +333,20 @@ const displayController = (() => {
   };
 
   const displayGame = () => {
+    createPlayerInputFields();
+    createStartRestartButton();
+    createGameOutcomeDisplay();
     displayPlayers();
     displayCurrentPlayer();
     displayGameStatus();
     displayWinner();
-    displayBoard();
+    // displayBoard();
+    createBoard();
   };
-  return { displayGame };
+  return { displayGame, updateDisplayWinner };
 })();
 
 // * Test
 
 game.initPlayers();
 game.initGame();
-//game.startGame();
-// displayController.displayGame();
